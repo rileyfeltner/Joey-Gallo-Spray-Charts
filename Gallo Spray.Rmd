@@ -1,0 +1,126 @@
+---
+title: "Gallo"
+author: "Riley Feltner"
+date: "2022-12-17"
+output: html_document
+---
+#Load in the Libraries
+```{r}
+library(baseballr)
+#devtools::install_github("bdilday/GeomMLBStadiums")
+library(GeomMLBStadiums)
+library(ggplot2)
+library(dplyr)
+```
+#Scrape Savant for Joey Gallo
+```{r}
+gallo <- scrape_statcast_savant_batter_all('2022-04-04', '2022-10-13', batterid = 608336)
+gallo2021 <- scrape_statcast_savant_batter_all('2021-04-01', '2021-10-05', batterid = 608336)
+gallo2018 <- scrape_statcast_savant_batter_all('2018-04-01', '2021-09-30', batterid = 608336)
+```
+
+#Team codes
+```{r}
+TeamCodes = data.frame(
+  home_team = c("LAA", "HOU", "OAK", "TOR", "ATL", "MIL", "STL", "CHC", "ARI", "LAD",
+                "SF", "CLE", "SEA", "MIA", "NYM", "WSH", "BAL", "SD", "PHI", "PIT",
+                "TEX", "TB", "BOS", "CIN", "COL", "KC", "DET", "MIN", "CWS", "NYY"),
+  venue = c("angels", "astros", "athletics", "blue_jays", "braves", "brewers", "cardinals",
+            "cubs", "diamondbacks", "dodgers", "giants", "guardians", "mariners", "marlines", "mets",
+            "nationals", "orioles", "padres", "phillies", "pirates", "rangers", "rays",
+            "red_sox", "reds", "rockies", "royals", "tigers", "twins", "white_sox", 
+            "yankees"),
+  stringsAsFactors = F
+)
+```
+
+#Gallo 2022
+```{r}
+galloinplay<- gallo %>% filter(type == "X")
+
+merged <- merge(galloinplay, TeamCodes, by = "home_team", all.x=T)
+
+galloinplayout <- filter(galloinplay, events == "field_out")
+
+
+#Gallo In Play 2022
+galloinplay %>% mlbam_xy_transformation() %>%
+ggplot(aes(x = hc_x_, y= hc_y_, color = bb_type))+
+  geom_spraychart(stadium_ids = "twins",
+                  stadium_transform_coords = TRUE,
+                  stadium_segments = "all")+
+  theme_void()+
+  coord_fixed()+
+  labs(title = "Joey Gallo 2022 Spray Chart", caption = "Data: Baseball Savant | Riley Feltner")
+
+#Gallo In Play Outs 2022
+galloinplayout %>% mlbam_xy_transformation() %>%
+ggplot(aes(x = hc_x_, y= hc_y_, color = bb_type))+
+  geom_spraychart(stadium_ids = "twins",
+                  stadium_transform_coords = TRUE,
+                  stadium_segments = "all")+
+  theme_void()+
+  coord_fixed()+
+  labs(title = "Joey Gallo 2022 Spray Chart Outs", caption = "Data: Baseball Savant | Riley Feltner")
+```
+
+#Gallo 2021
+```{r}
+galloinplay2021<- gallo2021 %>% filter(type == "X")
+
+merged <- merge(galloinplay2021, TeamCodes, by = "home_team", all.x=T)
+
+galloinplayout2021 <- filter(galloinplay2021, events == "field_out")
+
+
+#Gallo In Play 2021
+galloinplay2021 %>%  mlbam_xy_transformation() %>%
+ggplot(aes(x = hc_x_, y= hc_y_, color = bb_type))+
+  geom_spraychart(stadium_ids = "twins",
+                  stadium_transform_coords = TRUE,
+                  stadium_segments = "all")+
+  theme_void()+
+  coord_fixed()+
+   labs(title = "Joey Gallo 2021 Spray Chart", caption = "Data: Baseball Savant | Riley Feltner")
+
+#Gallo In Play Outs 2021
+galloinplayout2021 %>% mlbam_xy_transformation() %>%
+ggplot(aes(x = hc_x_, y= hc_y_, color = bb_type))+
+  geom_spraychart(stadium_ids = "twins",
+                  stadium_transform_coords = TRUE,
+                  stadium_segments = "all")+
+  theme_void()+
+  coord_fixed()+
+  labs(title = "Joey Gallo 2021 Spray Chart Outs", caption = "Data: Baseball Savant | Riley Feltner")
+```
+
+#Gallo 2018
+```{r}
+galloinplay2018<- gallo2018 %>% filter(type == "X")
+
+merged <- merge(galloinplay2018, TeamCodes, by = "home_team", all.x=T)
+
+galloinplayout2018 <- filter(galloinplay2018, events == "field_out")
+
+
+#Gallo In Play 2018
+galloinplay2018 %>% mlbam_xy_transformation() %>%
+ggplot(aes(x = hc_x_, y= hc_y_, color = bb_type))+
+  geom_spraychart(stadium_ids = "twins",
+                  stadium_transform_coords = TRUE,
+                  stadium_segments = "all")+
+  theme_void()+
+  coord_fixed()+
+  labs(title = "Joey Gallo 2018 Spray Chart", caption = "Data: Baseball Savant | Riley Feltner")
+
+#Gallo In Play Outs 2018
+galloinplayout2018 %>% mlbam_xy_transformation() %>%
+ggplot(aes(x = hc_x_, y= hc_y_, color = bb_type))+
+  geom_spraychart(stadium_ids = "twins",
+                  stadium_transform_coords = TRUE,
+                  stadium_segments = "all")+
+  theme_void()+
+  coord_fixed()+
+  labs(title = "Joey Gallo 2018 Spray Chart Outs", caption = "Data: Baseball Savant | Riley Feltner")
+```
+
